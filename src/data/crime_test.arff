@@ -1,0 +1,10 @@
+@RELATION Crime
+
+@ATTRIBUTE Struct {1,2,3}
+@ATTRIBUTE Security {1,2}
+@ATTRIBUTE Area {0,1}
+@ATTRIBUTE class {0,1}
+@DATA
+
+3, 0, 0, 1
+1, 1, 0, 1
