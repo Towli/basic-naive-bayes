@@ -7,6 +7,7 @@ import weka.core.Capabilities;
 import weka.core.Instance;
 import weka.core.Instances;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
 
 /**
@@ -16,6 +17,7 @@ public class BasicNaiveBayes implements Classifier {
 
     private int numClasses;
     private Instances instances;
+    private ArrayList<DataAttribute> attributes;
 
     /**
      * Create the necessary data structures and count the required occurrences in the training data
@@ -26,18 +28,15 @@ public class BasicNaiveBayes implements Classifier {
     public void buildClassifier(Instances instances) throws Exception {
         this.numClasses = instances.numClasses();
         this.instances = instances;
-
-        System.out.println(instances.attributeStats(0));
-
-        // loop over instances and calculate the distribution for each instance
-        for (int i = 0; i < instances.numInstances(); ++i) {
-            distributionForInstance(instances.get(i));
-        }
+        initDataAttributes();
+        for (DataAttribute attr : this.attributes)
+            System.out.println(attr.getNominalCounts());
     }
 
     @Override
     public double classifyInstance(Instance instance) throws Exception {
         // call distributionForInstance() and simply return the prediction as the class with the largest probability
+        distributionForInstance(instance);
         return 0;
     }
 
@@ -45,7 +44,6 @@ public class BasicNaiveBayes implements Classifier {
     public double[] distributionForInstance(Instance instance) throws Exception {
         // work out the probabilities of class member-ship for a single instance
         double distributions[] = new double[this.numClasses];
-
         Enumeration attributeEnumeration = instance.enumerateAttributes();
 
         // Enumerate attributes
@@ -63,5 +61,13 @@ public class BasicNaiveBayes implements Classifier {
     @Override
     public Capabilities getCapabilities() {
         return null;
+    }
+
+    private void initDataAttributes() {
+        this.attributes = new ArrayList<>();
+        int numDataAttributes = this.instances.numAttributes();
+        for (int i = 0; i < numDataAttributes; ++i) {
+            this.attributes.add(new DataAttribute(this.instances.attributeStats(i).nominalCounts));
+        }
     }
 }

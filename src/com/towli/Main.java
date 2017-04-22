@@ -20,10 +20,6 @@ public class Main {
         // Build classifier
         BasicNaiveBayes naiveBayes = new BasicNaiveBayes();
         naiveBayes.buildClassifier(trainingInstances);
-
-        // getInstances() from .arffs
-        // Create new BasicNaiveBayes classifier
-        // Classify the test data
     }
 
     /**
