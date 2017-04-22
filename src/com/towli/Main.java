@@ -9,10 +9,17 @@ import java.io.FileReader;
  */
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         // Read in .arff files
-        String filePath = "data/crime_train.arff";
+        String filePath = "resources/crime_train.arff";
         Instances trainingInstances = readData(filePath);
+        trainingInstances = initTrainingInstances(trainingInstances);
+
+        System.out.println(trainingInstances.classAttribute().toString());
+
+        // Build classifier
+        BasicNaiveBayes naiveBayes = new BasicNaiveBayes();
+        naiveBayes.buildClassifier(trainingInstances);
 
         // getInstances() from .arffs
         // Create new BasicNaiveBayes classifier
@@ -32,6 +39,11 @@ public class Main {
             System.out.println("Exception caught: "+e);
         }
         return instances;
+    }
+
+    public static Instances initTrainingInstances(Instances trainingInstances) {
+        trainingInstances.setClassIndex(trainingInstances.numAttributes()-1);
+        return trainingInstances;
     }
 
 }
