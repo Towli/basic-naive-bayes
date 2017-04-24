@@ -1,5 +1,6 @@
 package com.towli;
 
+import com.sun.tools.doclint.HtmlTag;
 import weka.classifiers.Classifier;
 import weka.classifiers.bayes.NaiveBayes;
 import weka.core.Attribute;
@@ -28,9 +29,11 @@ public class BasicNaiveBayes implements Classifier {
     public void buildClassifier(Instances instances) throws Exception {
         this.numClasses = instances.numClasses();
         this.instances = instances;
-        initDataAttributes();
-        for (DataAttribute attr : this.attributes)
-            System.out.println(attr.getNominalCounts());
+
+        int attIndex = 0;
+        for(Enumeration enu = this.instances.enumerateAttributes(); enu.hasMoreElements(); ++attIndex) {
+            calculateConditionalDistributions((Attribute)enu.nextElement());
+        }
     }
 
     @Override
@@ -68,6 +71,30 @@ public class BasicNaiveBayes implements Classifier {
         int numDataAttributes = this.instances.numAttributes();
         for (int i = 0; i < numDataAttributes; ++i) {
             this.attributes.add(new DataAttribute(this.instances.attributeStats(i).nominalCounts));
+        }
+    }
+
+    // Test function
+    private void calculateConditionalDistributions(Attribute attribute) {
+        // split instances by the class values..
+        // e.g. if class = crime {0,1}, the instances get split into two separate lists for {0,1} respectively
+        int numerator = 0, denominator = 0;
+        if (!attribute.name().equalsIgnoreCase("class")) {
+            for (int i = 0; i < attribute.numValues(); ++i) {
+                for (int j = 0; j < this.numClasses; ++j) {
+                    for (int k = 0; k < this.instances.numInstances(); ++k) {
+                        if (this.instances.get(k).classValue() == j) {
+                            denominator++;
+                            if (this.instances.get(k).value(attribute) == i)
+                                numerator++;
+                        }
+                    }
+                    String conditionalDistribution = numerator + "/" + denominator;
+                    System.out.println(conditionalDistribution);
+                    numerator = 0;
+                    denominator = 0;
+                }
+            }
         }
     }
 }
