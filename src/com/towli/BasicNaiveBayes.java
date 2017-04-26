@@ -75,6 +75,11 @@ public class BasicNaiveBayes implements Classifier {
         this.classAttribute.setNominalCounts(nominalCounts);
     }
 
+    /**
+     * Calculates the distributions for an attribute
+     * -> iterates for each value of the dataset's Class Attribute
+     * @param attribute
+     */
     private void calculateDistributions(DataAttribute attribute) {
         attribute.initDistributionSets(numClasses); //maybe reference classAttribute.numValues instead
         DistributionSet newDistributionSet;
@@ -84,6 +89,13 @@ public class BasicNaiveBayes implements Classifier {
         }
     }
 
+    /**
+     * Iterate over the the set of training instances, counting the occurrences of each value of
+     * the provided for each value of the Class attribute.
+     * @param index
+     * @param attribute
+     * @return
+     */
     private DistributionSet calculateConditionals(int index, DataAttribute attribute) {
         int counter = 0;
         int attributeValues = attribute.getAttribute().numValues();
@@ -101,4 +113,5 @@ public class BasicNaiveBayes implements Classifier {
         }
         return new DistributionSet(conditionalDistributions);
     }
+
 }
