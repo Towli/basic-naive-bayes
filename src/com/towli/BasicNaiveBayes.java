@@ -1,12 +1,10 @@
 package com.towli;
 
 import weka.classifiers.Classifier;
-import weka.core.Attribute;
 import weka.core.Capabilities;
 import weka.core.Instance;
 import weka.core.Instances;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Created by Towli on 20/04/2017.
@@ -35,9 +33,9 @@ public class BasicNaiveBayes implements Classifier {
         for (DataAttribute attribute : attributes)
             calculateDistributions(attribute);
 
-        for (DataAttribute attribute : attributes) {
-            System.out.println(attribute.getDistributionSets());
-        }
+        for (DataAttribute attribute : attributes)
+            for (DistributionSet set : attribute.getDistributionSets())
+                System.out.println(set);
     }
 
     @Override
