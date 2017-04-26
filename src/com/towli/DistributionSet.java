@@ -7,6 +7,8 @@ public class DistributionSet {
 
     private double[] distributions;
 
-    public DistributionSet() {}
+    public DistributionSet(double[] distributions) {
+        this.distributions = distributions;
+    }
 
 }

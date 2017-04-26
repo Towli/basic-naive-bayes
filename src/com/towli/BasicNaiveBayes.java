@@ -6,6 +6,7 @@ import weka.core.Capabilities;
 import weka.core.Instance;
 import weka.core.Instances;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by Towli on 20/04/2017.
@@ -26,8 +27,17 @@ public class BasicNaiveBayes implements Classifier {
     public void buildClassifier(Instances instances) throws Exception {
         this.numClasses = instances.numClasses();
         this.instances = instances;
+        this.attributes = new ArrayList<>();
+
         createDataAttributes();
         createClassAttributes();
+
+        for (DataAttribute attribute : attributes)
+            calculateDistributions(attribute);
+
+        for (DataAttribute attribute : attributes) {
+            System.out.println(attribute.getDistributionSets());
+        }
     }
 
     @Override
@@ -53,7 +63,7 @@ public class BasicNaiveBayes implements Classifier {
      */
     private void createDataAttributes() {
         for (int i = 0; i < this.instances.numAttributes(); ++i)
-            while (i != instances.classIndex())
+            if (i != instances.classIndex())
                 this.attributes.add(new DataAttribute(instances.attribute(i)));
     }
 
@@ -62,10 +72,35 @@ public class BasicNaiveBayes implements Classifier {
      * -> currently assumes only a single class attribute
      */
     private void createClassAttributes() {
+        int[] nominalCounts = instances.attributeStats(instances.classIndex()).nominalCounts;
         this.classAttribute = new ClassAttribute(instances.classAttribute());
+        this.classAttribute.setNominalCounts(nominalCounts);
     }
 
-    private void calculateConditionalDistributions(Attribute attribute) {
+    private void calculateDistributions(DataAttribute attribute) {
+        attribute.initDistributionSets(numClasses); //maybe reference classAttribute.numValues instead
+        DistributionSet newDistributionSet;
+        for (int i = 0; i < attribute.getDistributionSets().length; ++i) {
+            newDistributionSet = calculateConditionals(i, attribute);
+            attribute.assignDistributionSet(i, newDistributionSet);
+        }
+    }
 
+    private DistributionSet calculateConditionals(int index, DataAttribute attribute) {
+        int counter = 0;
+        int attributeValues = attribute.getAttribute().numValues();
+        int classValueOccurrences = classAttribute.getNominalCounts()[index];
+        double[] conditionalDistributions = new double[attributeValues];
+
+        for (int i = 0; i < attributeValues; ++i) {
+            for (int j = 0; j < instances.numInstances(); ++j) {
+                if (instances.instance(j).stringValue(attribute.getAttribute()) == attribute.getAttribute().value(i) &&
+                        String.valueOf((int) instances.instance(j).classValue()).equalsIgnoreCase(classAttribute.getValueByIndex(index)))
+                    counter++;
+            }
+            conditionalDistributions[i] = (double)counter / (double)classValueOccurrences;
+            counter = 0;
+        }
+        return new DistributionSet(conditionalDistributions);
     }
 }

@@ -8,10 +8,26 @@ import weka.core.Attribute;
 public class DataAttribute {
 
     private Attribute attribute;
-    private DistributionSet[] sets;
+    private DistributionSet[] distributionSets;
 
     public DataAttribute(Attribute attribute) {
         this.attribute = attribute;
+    }
+
+    public void initDistributionSets(int size) {
+        distributionSets = new DistributionSet[size];
+    }
+
+    public DistributionSet[] getDistributionSets() {
+        return this.distributionSets;
+    }
+
+    public void assignDistributionSet(int index, DistributionSet distributions) {
+        distributionSets[index] = distributions;
+    }
+
+    public Attribute getAttribute() {
+        return this.attribute;
     }
 
 }
