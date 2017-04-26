@@ -15,8 +15,6 @@ public class Main {
         Instances trainingInstances = readData(filePath);
         trainingInstances = initTrainingInstances(trainingInstances);
 
-        System.out.println(trainingInstances.classAttribute().toString());
-
         // Build classifier
         BasicNaiveBayes naiveBayes = new BasicNaiveBayes();
         naiveBayes.buildClassifier(trainingInstances);
