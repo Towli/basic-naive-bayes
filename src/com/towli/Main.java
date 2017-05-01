@@ -3,6 +3,7 @@ package com.towli;
 import weka.core.Instances;
 
 import java.io.FileReader;
+import java.util.Arrays;
 
 /**
  * Driver class for processing BasicNaiveBayes experiments
@@ -11,13 +12,20 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         // Read in .arff files
-        String filePath = "resources/crime_train.arff";
-        Instances trainingInstances = readData(filePath);
-        trainingInstances = initTrainingInstances(trainingInstances);
+        String trainData = "resources/crime_train.arff";
+        String testData = "resources/crime_test.arff";
+        Instances trainingInstances = readData(trainData);
+        trainingInstances = initInstances(trainingInstances);
+        Instances testingInstances = readData(testData);
+        testingInstances = initInstances(testingInstances);
 
         // Build classifier
         BasicNaiveBayes naiveBayes = new BasicNaiveBayes();
         naiveBayes.buildClassifier(trainingInstances);
+
+        for (int i = 0; i < testingInstances.numInstances(); ++i)
+            System.out.println(naiveBayes.classifyInstance(testingInstances.get(i)));
+
     }
 
     /**
@@ -35,9 +43,9 @@ public class Main {
         return instances;
     }
 
-    public static Instances initTrainingInstances(Instances trainingInstances) {
-        trainingInstances.setClassIndex(trainingInstances.numAttributes()-1);
-        return trainingInstances;
+    public static Instances initInstances(Instances instances) {
+        instances.setClassIndex(instances.numAttributes()-1);
+        return instances;
     }
 
 }

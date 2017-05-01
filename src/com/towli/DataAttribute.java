@@ -3,7 +3,10 @@ package com.towli;
 import weka.core.Attribute;
 
 /**
- * Created by Towli on 23/04/2017.
+ * Class to model an Attribute for use in a Classifier
+ * - Contains an array of DistributionSets
+ * - Idea is that a DistributionSet models a set of distributions for a given class
+ *      so the DistributionSet array will have a size equal to the amount of class values
  */
 public class DataAttribute {
 

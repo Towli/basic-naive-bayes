@@ -1,7 +1,9 @@
 package com.towli;
 
 /**
- * Created by Towli on 26/04/2017.
+ * - Class to model a set of distributions
+ * - Should be used (contained) by a DataAttribute object
+ * - Should represent a set of distributions for an attribute given a single class value
  */
 public class DistributionSet {
 
@@ -9,6 +11,10 @@ public class DistributionSet {
 
     public DistributionSet(double[] distributions) {
         this.distributions = distributions;
+    }
+
+    public double getDistributionByValue(int value) {
+        return distributions[value];
     }
 
     @Override

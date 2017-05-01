@@ -26,4 +26,8 @@ public class ClassAttribute {
         this.nominalCounts = nominalCounts;
     }
 
+    public double getMarginal(int classValueIndex, int numInstances) {
+        return (double)nominalCounts[classValueIndex] / (double)numInstances;
+    }
+
 }

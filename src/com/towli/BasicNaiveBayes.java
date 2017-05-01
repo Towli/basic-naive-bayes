@@ -40,14 +40,29 @@ public class BasicNaiveBayes implements Classifier {
 
     @Override
     public double classifyInstance(Instance instance) throws Exception {
-        distributionForInstance(instance);
-        return 0;
+        return distributionForInstance(instance)[1];
     }
 
+    /**
+     * Work out the probabilities of class member-ship for a single instance
+     * @param instance
+     * @return
+     * @throws Exception
+     */
     @Override
     public double[] distributionForInstance(Instance instance) throws Exception {
-        // work out the probabilities of class member-ship for a single instance
-        return new double[0];
+        int classValue = (int)instance.classValue();
+        int attributeValue;
+        double distribution = 1.0d;
+        System.out.println("Distribution for instance...");
+        for (DataAttribute attribute : attributes) {
+            attributeValue = (int)instance.value(attribute.getAttribute());
+            distribution *= attribute.getDistributionSets()[classValue].getDistributionByValue(attributeValue);
+        }
+        distribution *= classAttribute.getMarginal(classValue, instances.numInstances());
+
+        double[] dist = {0, distribution};
+        return dist;
     }
 
     @Override
@@ -83,7 +98,7 @@ public class BasicNaiveBayes implements Classifier {
     private void calculateDistributions(DataAttribute attribute) {
         attribute.initDistributionSets(numClasses); //maybe reference classAttribute.numValues instead
         DistributionSet newDistributionSet;
-        for (int i = 0; i < attribute.getDistributionSets().length; ++i) {
+        for (int i = 0; i < numClasses; ++i) {
             newDistributionSet = calculateConditionals(i, attribute);
             attribute.assignDistributionSet(i, newDistributionSet);
         }
@@ -92,20 +107,20 @@ public class BasicNaiveBayes implements Classifier {
     /**
      * Iterate over the the set of training instances, counting the occurrences of each value of
      * the provided for each value of the Class attribute.
-     * @param index
+     * @param classValueIndex
      * @param attribute
      * @return
      */
-    private DistributionSet calculateConditionals(int index, DataAttribute attribute) {
+    private DistributionSet calculateConditionals(int classValueIndex, DataAttribute attribute) {
         int counter = 0;
         int attributeValues = attribute.getAttribute().numValues();
-        int classValueOccurrences = classAttribute.getNominalCounts()[index];
+        int classValueOccurrences = classAttribute.getNominalCounts()[classValueIndex];
         double[] conditionalDistributions = new double[attributeValues];
 
         for (int i = 0; i < attributeValues; ++i) {
             for (int j = 0; j < instances.numInstances(); ++j) {
                 if (instances.instance(j).stringValue(attribute.getAttribute()) == attribute.getAttribute().value(i) &&
-                        String.valueOf((int) instances.instance(j).classValue()).equalsIgnoreCase(classAttribute.getValueByIndex(index)))
+                        String.valueOf((int) instances.instance(j).classValue()).equalsIgnoreCase(classAttribute.getValueByIndex(classValueIndex)))
                     counter++;
             }
             conditionalDistributions[i] = (double)counter / (double)classValueOccurrences;
