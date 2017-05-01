@@ -32,10 +32,6 @@ public class BasicNaiveBayes implements Classifier {
 
         for (DataAttribute attribute : attributes)
             calculateDistributions(attribute);
-
-        for (DataAttribute attribute : attributes)
-            for (DistributionSet set : attribute.getDistributionSets())
-                System.out.println(set);
     }
 
     @Override
@@ -128,5 +124,7 @@ public class BasicNaiveBayes implements Classifier {
         }
         return new DistributionSet(conditionalDistributions);
     }
+
+
 
 }
