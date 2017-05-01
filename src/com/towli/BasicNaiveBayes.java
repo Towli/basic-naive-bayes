@@ -101,6 +101,30 @@ public class BasicNaiveBayes implements Classifier {
     }
 
     /**
+     * Returns whether a specified attribute in a single given instance has equal value to a particular value
+     * of a DataAttribute
+     * @param instance
+     * @param attribute
+     * @param attrValueIndex
+     * @return true if equal, else false
+     */
+    private boolean attrValuesEqual(Instance instance, DataAttribute attribute, int attrValueIndex) {
+        return instance.stringValue((attribute.getAttribute())).equalsIgnoreCase(attribute.getAttribute().value(attrValueIndex));
+    }
+
+    /**
+     * Returns whether a specified class in a single given instances has equal value to a particular value
+     * of a ClassAttribute
+     * @param instance
+     * @param classAttribute
+     * @param classValueIndex
+     * @return true if equal, else false
+     */
+    private boolean classValuesEqual(Instance instance, ClassAttribute classAttribute, int classValueIndex) {
+        return String.valueOf((int) instance.classValue()).equalsIgnoreCase(classAttribute.getValueByIndex(classValueIndex));
+    }
+
+    /**
      * Iterate over the the set of training instances, counting the occurrences of each value of
      * the provided for each value of the Class attribute.
      * @param classValueIndex
@@ -112,19 +136,19 @@ public class BasicNaiveBayes implements Classifier {
         int attributeValues = attribute.getAttribute().numValues();
         int classValueOccurrences = classAttribute.getNominalCounts()[classValueIndex];
         double[] conditionalDistributions = new double[attributeValues];
+        Instance instance;
 
         for (int i = 0; i < attributeValues; ++i) {
             for (int j = 0; j < instances.numInstances(); ++j) {
-                if (instances.instance(j).stringValue(attribute.getAttribute()) == attribute.getAttribute().value(i) &&
-                        String.valueOf((int) instances.instance(j).classValue()).equalsIgnoreCase(classAttribute.getValueByIndex(classValueIndex)))
+                instance = instances.instance(j);
+                if (attrValuesEqual(instance, attribute, i) &&
+                        classValuesEqual(instance, classAttribute, classValueIndex)) {
                     counter++;
+                }
             }
             conditionalDistributions[i] = (double)counter / (double)classValueOccurrences;
             counter = 0;
         }
         return new DistributionSet(conditionalDistributions);
     }
-
-
-
 }
