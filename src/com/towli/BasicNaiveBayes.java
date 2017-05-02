@@ -36,7 +36,12 @@ public class BasicNaiveBayes implements Classifier {
 
     @Override
     public double classifyInstance(Instance instance) throws Exception {
-        return distributionForInstance(instance)[1];
+        //int classValue = (int)instance.classValue();
+        double[] distributions = distributionForInstance(instance);
+        double classification = 0.0d;
+        for (int i = 0; i < distributions.length; ++i)
+            classification = distributions[i] > classification ? distributions[i] : classification;
+        return classification;
     }
 
     /**
@@ -47,18 +52,30 @@ public class BasicNaiveBayes implements Classifier {
      */
     @Override
     public double[] distributionForInstance(Instance instance) throws Exception {
-        int classValue = (int)instance.classValue();
-        int attributeValue;
-        double distribution = 1.0d;
-        System.out.println("Distribution for instance...");
-        for (DataAttribute attribute : attributes) {
-            attributeValue = (int)instance.value(attribute.getAttribute());
-            distribution *= attribute.getDistributionSets()[classValue].getDistributionByValue(attributeValue);
+        double[] distribution = new double[this.numClasses];
+        int classValue;
+        for (int i = 0; i < distribution.length; i++) {
+            classValue = Integer.parseInt(this.classAttribute.getValueByIndex(i));
+            distribution[i] = calculateProbabilityDensity(instance, classValue);
         }
-        distribution *= classAttribute.getMarginal(classValue, instances.numInstances());
+        return distribution;
+    }
 
-        double[] dist = {0, distribution};
-        return dist;
+    /**
+     *
+     * @param instance
+     * @param classValue
+     * @return
+     */
+    private double calculateProbabilityDensity(Instance instance, int classValue) {
+        int attributeValue;
+        double classification = 1.0d;
+        for (DataAttribute attribute : this.attributes) {
+            attributeValue = (int)instance.value(attribute.getAttribute());
+            classification *= attribute.getDistributionSets()[classValue].getDistributionByValue(attributeValue);
+        }
+        classification *= classAttribute.getMarginal(classValue, instances.numInstances());
+        return classification;
     }
 
     @Override

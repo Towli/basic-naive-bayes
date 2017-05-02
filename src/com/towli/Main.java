@@ -1,5 +1,6 @@
 package com.towli;
 
+import weka.classifiers.bayes.NaiveBayes;
 import weka.core.Instances;
 
 import java.io.FileReader;
@@ -23,9 +24,19 @@ public class Main {
         BasicNaiveBayes naiveBayes = new BasicNaiveBayes();
         naiveBayes.buildClassifier(trainingInstances);
 
+        System.out.println("Classifying all instances:");
         for (int i = 0; i < testingInstances.numInstances(); ++i)
             System.out.println(naiveBayes.classifyInstance(testingInstances.get(i)));
 
+        System.out.println("Distribution for all instances:");
+        for (int i = 0; i < testingInstances.numInstances(); ++i)
+            System.out.println(Arrays.toString(naiveBayes.distributionForInstance(testingInstances.get(i))));
+
+        NaiveBayes nb = new NaiveBayes();
+        nb.buildClassifier(trainingInstances);
+        System.out.println("Classifying all instances with weka.NaiveBayes");
+        for (int i = 0; i < testingInstances.numInstances(); ++i)
+            System.out.println(Arrays.toString(nb.distributionForInstance(testingInstances.get(i))));
     }
 
     /**
