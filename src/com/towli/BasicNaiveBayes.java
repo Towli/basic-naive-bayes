@@ -34,9 +34,16 @@ public class BasicNaiveBayes implements Classifier {
             calculateDistributions(attribute);
     }
 
+    /**
+     * Classifies the given instance
+     * Calls distributionForInstance to retrieve the entire probability distribution of the given
+     * instance, selects, and returns the highest density
+     * @param instance
+     * @return the highest probability density representing the instance's class as a double
+     * @throws Exception
+     */
     @Override
     public double classifyInstance(Instance instance) throws Exception {
-        //int classValue = (int)instance.classValue();
         double[] distributions = distributionForInstance(instance);
         double classification = 0.0d;
         for (int i = 0; i < distributions.length; ++i)
@@ -45,9 +52,9 @@ public class BasicNaiveBayes implements Classifier {
     }
 
     /**
-     * Work out the probabilities of class member-ship for a single instance
+     * Calculates the entire probability distribution of a single instance
      * @param instance
-     * @return
+     * @return the highest probability density representing the instance's class as a double[]
      * @throws Exception
      */
     @Override
@@ -76,6 +83,10 @@ public class BasicNaiveBayes implements Classifier {
         }
         classification *= classAttribute.getMarginal(classValue, instances.numInstances());
         return classification;
+    }
+
+    private void normaliseDistribution(Instance instance, double distribution) {
+        // todo
     }
 
     @Override
