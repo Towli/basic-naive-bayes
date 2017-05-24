@@ -12,7 +12,7 @@ import java.util.Arrays;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        // Read in .arff files
+        /* Read in .arff files */
         String trainData = "resources/crime_train.arff";
         String testData = "resources/crime_test.arff";
         Instances trainingInstances = readData(trainData);
@@ -20,7 +20,7 @@ public class Main {
         Instances testingInstances = readData(testData);
         testingInstances = initInstances(testingInstances);
 
-        // Build classifier
+        /* Build classifier */
         BasicNaiveBayes naiveBayes = new BasicNaiveBayes();
         naiveBayes.buildClassifier(trainingInstances);
 
@@ -31,12 +31,6 @@ public class Main {
         System.out.println("Distribution for all instances:");
         for (int i = 0; i < testingInstances.numInstances(); ++i)
             System.out.println(Arrays.toString(naiveBayes.distributionForInstance(testingInstances.get(i))));
-
-        NaiveBayes nb = new NaiveBayes();
-        nb.buildClassifier(trainingInstances);
-        System.out.println("Classifying all instances with weka.NaiveBayes");
-        for (int i = 0; i < testingInstances.numInstances(); ++i)
-            System.out.println(Arrays.toString(nb.distributionForInstance(testingInstances.get(i))));
     }
 
     /**
