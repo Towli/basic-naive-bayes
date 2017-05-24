@@ -11,10 +11,10 @@ import java.util.ArrayList;
  */
 public class BasicNaiveBayes implements Classifier {
 
-    private int numClasses;
-    private Instances instances;
-    private ArrayList<DataAttribute> attributes;
-    private ClassAttribute classAttribute;
+    protected int numClasses;
+    protected Instances instances;
+    protected ArrayList<DataAttribute> attributes;
+    protected ClassAttribute classAttribute;
 
     /**
      * Create the necessary data structures and count the required occurrences in the training data
